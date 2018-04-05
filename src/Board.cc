@@ -231,7 +231,9 @@ void Board::updateResources(int diceRoll) {
 
 			cout << "tile val: " << tiles[i]->getTileVal() << endl;
 			// Call tile distributeResource function
-			tiles[i]->DistributeResource();
+			if (!tiles[i]->existGeese()){
+				tiles[i]->DistributeResource();
+			}
 		}
 	}
 }
