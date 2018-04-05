@@ -55,7 +55,7 @@ void Tile::setVertices(vector<std::shared_ptr<Vertex>> v)
 void Tile::DistributeResource() {
 	// Can only run function on vertices with an owner
 
-	cout << "vertices size: " << vertices.size() << endl;
+	// cout << "vertices size: " << vertices.size() << endl;
 
 	int vSize = vertices.size();
 	for (int i = 0; i < vSize; ++i) {

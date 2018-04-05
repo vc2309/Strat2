@@ -231,9 +231,7 @@ void Board::updateResources(int diceRoll) {
 
 			// cout << "tile val: " << tiles[i]->getTileVal() << endl;
 			// Call tile distributeResource function
-			if (!tiles[i]->existGeese()){
-				tiles[i]->DistributeResource();
-			}
+			tiles[i]->DistributeResource();
 		}
 	}
 }
@@ -807,24 +805,59 @@ void Board::moveGeese(){
 	}
 	tiles[current]->setGeese(false);
 	tiles[a]->setGeese(true);
-	
+	bool truth[4]={false,false,false,false};
 	string possiblePlayers[4];
 	for (int i = 0; i < 6; i++){
 		shared_ptr<Vertex> vert = tiles[a]->getVertices(i);
 		int ownerid = vert->getOwnerID();
+		
 		if (ownerid >= 0){
-			if (ownerid == 0) possiblePlayers[0] = "Blue";
-			else if (ownerid == 1) possiblePlayers[1] = "Red";
-			else if (ownerid == 2) possiblePlayers[2] = "Orange";
-			else if (ownerid == 3) possiblePlayers[3] = "Yellow";
+			if (ownerid == 0) {
+				possiblePlayers[0] = "Blue";
+				truth[0] = true;
+			}
+			else if (ownerid == 1){ 
+				possiblePlayers[1] = "Red";
+				truth[1] = true;
+			}
+			else if (ownerid == 2){
+			 possiblePlayers[2] = "Orange";
+			 truth[2] = true;
+			}
+			else if (ownerid == 3) {
+				possiblePlayers[3] = "Yellow";
+				truth[3] = true;
+			}
 		}
 	}
 	string choice;
 	int choices;
-	while (true){
-		// cout<<"choose\n"<<endl;
+	while(true){
+		bool allf=true;
+		for (int i = 0; i < 4; ++i)
+		{
+			if (truth[i])
+			{
+				allf=false;
+			}
+		}
+		if(!allf)
+	{
+		cout<<"Choose player to take resources from. Possible players are "<<endl;
+	
+		for (int i = 0; i < 4; ++i)
+		{
+			if (truth[i]){
+				cout << possiblePlayers[i] << " ";
+			}
+		}
+		cout << "\n";
 		cin.ignore();
 		getline(cin,choice);
+	}
+	else{
+		break;
+	}
 		if (choice == possiblePlayers[playerTurn]){
 			cout << "Invalid, you can't choose yourself" << endl;
 		}
@@ -837,18 +870,20 @@ void Board::moveGeese(){
 	else if (choice == "Orange") choices = 2;
 	else if (choice == "Yellow") choices = 3;
 	int resourcetaken;
+	bool allz=false;
 	while (true){
 		// cout<<"here"<<endl;
-		bool allz=true;
+		
 		for (int i = 0; i < 5; ++i)
 		{
 			if (pPlayers[choices]->getRIndex(i)>0)
 			{
-				allz=false;
+				allz=true;
 			}
 		}
-		if (allz)
+		if (!allz)
 		{
+			cout<<"break"<<endl;
 			break;
 		}
 		resourcetaken = rand()%4;
@@ -858,8 +893,9 @@ void Board::moveGeese(){
 			break;
 		}
 	}
-	pPlayers[choices]->getResources(resourcetaken, -1);
-	pPlayers[playerTurn]->getResources(resourcetaken, 1);
+	if(allz)
+	{pPlayers[choices]->getResources(resourcetaken, -1);
+		pPlayers[playerTurn]->getResources(resourcetaken, 1);}
 }
 	
 			
