@@ -82,10 +82,10 @@ SourceData::SourceData(string SourceFile):  isSave{false}, isSeed{false}, seedVa
   File.open(SourceFile);
   for (int i = 0; i < 19; i++){
     File >> Brd[i];
-    cout << Brd[i];
+    // cout << Brd[i];
     File >> Brd[i+19];
 
-    cout << Brd[i+19];
+    // cout << Brd[i+19];
   }
 }
 
@@ -121,13 +121,13 @@ void SourceData::NotifyBoard(){
     shared_ptr<Tile> PTile = PBoard->getTile(i);
     Resources res[]={Resources::BRICK,Resources::ENERGY,Resources::GLASS,Resources::HEAT,Resources::WIFI,Resources::PARK};
     PTile->setResource(res[Brd[i]]);
-    cout << Brd[i];
+    // cout << Brd[i];
     PTile->setTileVal(Brd[i+19]);
     
     if (!isSave && i == 6){
-      cout << "Geese Set" << endl;
+      // cout << "Geese Set" << endl;
       PTile->setGeese(true);
-      cout << PTile->existGeese() << endl;
+      // cout << PTile->existGeese() << endl;
     }
 
   }

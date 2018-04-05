@@ -140,10 +140,10 @@ Board::Board(bool save, bool seed, int seedVal, string saved, string boardLayout
 					int level;
 					istringstream vertex{check};
 					vertex >> address; // address of player B,H,T
-					cout<<address<<" a"<<endl;
+					// cout<<address<<" a"<<endl;
 					ssLine >> check; // residence LEVEL
 					level = convertLevel(check);
-					cout<<level<<" l"<<endl;
+					// cout<<level<<" l"<<endl;
 					updatePlayerVertex(address, level+1, i - 1);
 				}
 			}
@@ -158,7 +158,7 @@ Board::Board(bool save, bool seed, int seedVal, string saved, string boardLayout
 				int geeseLocation;
 				istringstream ssLine{line};
 				ssLine >> geeseLocation;
-				cout<<geeseLocation<<"GEESE"<<endl;
+				// cout<<geeseLocation<<"GEESE"<<endl;
 				if(geeseLocation==-1)
 				{
 
@@ -180,7 +180,7 @@ Board::Board(bool save, bool seed, int seedVal, string saved, string boardLayout
 	setAdjEdges();
 	setAdjVertex();
 
-	cout << "reached " << endl;
+	// cout << "reached " << endl;
 }
 
 int Board::convertLevel(string level) {
@@ -229,7 +229,7 @@ void Board::updateResources(int diceRoll) {
 	for (int i = 0; i < tileSize; ++i) {
 		if (tiles[i]->getTileVal() == diceRoll) {
 
-			cout << "tile val: " << tiles[i]->getTileVal() << endl;
+			// cout << "tile val: " << tiles[i]->getTileVal() << endl;
 			// Call tile distributeResource function
 			tiles[i]->DistributeResource();
 		}
@@ -349,7 +349,7 @@ void Board::updatePlayerVertex(int address, int level, int players){
 	}
 	PVert->setOwner(players, Pplay);
 	Pplay->setResidence(PVert);
-	cout<<vertices[address]->getOwnerID()<<"id"<<endl;
+	// cout<<vertices[address]->getOwnerID()<<"id"<<endl;
 }
 void Board::updatePlayerRoad(int path, int players){
 	shared_ptr<Player> Pplay = this->pPlayers[players];
@@ -383,7 +383,7 @@ void Board::chosestarting(){
 			for (int j = 0; j < size; j++){
 				shared_ptr<Edge> v = vertices[aa]->getEdge(j);
 				for (int k = 0; k < 2; k++){
-					if (v->getVertex(k)->getOwnerID() != -1){
+					if (v->getVertex(k)->getOwnerID() != -1 && v->getVertex(k)->getOwnerID()!=i){
 						adj = false;
 					}
 				}
@@ -430,7 +430,7 @@ void Board::chosestarting(){
 			for (int j = 0; j < size; j++){
 				shared_ptr<Edge> v = vertices[aa]->getEdge(j);
 				for (int k = 0; k < 2; k++){
-					if (v->getVertex(k)->getOwnerID() != -1){
+					if (v->getVertex(k)->getOwnerID() != -1  && v->getVertex(k)->getOwnerID()!=i){
 						adj = false;
 					}
 				}
@@ -469,6 +469,7 @@ void Board::chosestarting(){
 }
 
 void Board::playturn(int Players){
+	playerTurn=Players;
 	shared_ptr<Player> p = getPlayer(Players);
 
 	// printBoard etc...
@@ -515,6 +516,7 @@ void Board::playturn(int Players){
 		}
 		else if (d == "status"){
 			for (int i = 0; i < 4; i++){
+				// cout<<pPlayers[i]->getID()<<endl;
 				cout << pPlayers[i]->convertColor() <<" has " << pPlayers[i]->playerStatuses() << " building points, " <<pPlayers[i]->getRIndex(0)<<" brick, "<<pPlayers[i]->getRIndex(1)<<" energy, "<<pPlayers[i]->getRIndex(2)<<" glass, "<<pPlayers[i]->getRIndex(3)<<" heat, and "<<pPlayers[i]->getRIndex(4)<<" WiFi."<<endl;
 // 				cout<< <colour> has <numPoints> building points, <numBrick> brick, <numEnergy> energy,
 // <numGlass> glass, <numHeat> heat, and <numWiFi> WiFi.
@@ -612,9 +614,9 @@ void Board::playturn(int Players){
 			string saveFile;
 			cin >> saveFile;
 
-			cout << saveFile << endl;
+			
 			saveGame(saveFile);
-			cout << "fuck" << endl;
+			
 		}
 		else if (cin.eof()) { // sudden eof was given
 			cout << "Backup Saved" << endl;
@@ -714,7 +716,7 @@ string Board::builderData(int player) {
 void Board::saveGame(string file) {
 	cin.ignore();
 
-	cout << "hi" << endl;
+	
 	string currTurn;
 	string builder01;
 	string builder02;
@@ -734,15 +736,15 @@ void Board::saveGame(string file) {
 
 	int tileSize = 19;
 	for (int i = 0; i < tileSize; ++i) { // For <board>
-		cout << "work here hoe..." << endl;
+		
 
 		board += convertResource(tiles[i]->getResource());
-		cout << convertResource(tiles[i]->getResource()) << endl;
+		// cout << convertResource(tiles[i]->getResource()) << endl;
 
 		stringstream ss;
 		ss << tiles[i]->getTileVal();
 		board += (" " + ss.str() + " ");
-		cout << "ss.str(): " << ss.str() << endl;
+		// cout << "ss.str(): " << ss.str() << endl;
 	}
 	for (int j = 0; j < tileSize; ++j) {
 		if (tiles[j]->existGeese()) {
@@ -792,7 +794,7 @@ void Board::moveGeese(){
 	int a;
 	while (true){
 		cout << "Choose a Tile to Move the Geese" << endl;
-		cout << "curr: " <<  current << endl;
+		// cout << "curr: " <<  current << endl;
 		cin >> a;
 		if (a == current){
 			cout << "Invalid Selection Go Again" << endl;
@@ -818,7 +820,7 @@ void Board::moveGeese(){
 	string choice;
 	int choices;
 	while (true){
-		cout<<"choose\n"<<endl;
+		// cout<<"choose\n"<<endl;
 		cin.ignore();
 		getline(cin,choice);
 		if (choice == possiblePlayers[playerTurn]){
@@ -834,7 +836,7 @@ void Board::moveGeese(){
 	else if (choice == "Yellow") choices = 3;
 	int resourcetaken;
 	while (true){
-		cout<<"here"<<endl;
+		// cout<<"here"<<endl;
 		bool allz=true;
 		for (int i = 0; i < 5; ++i)
 		{
@@ -849,7 +851,7 @@ void Board::moveGeese(){
 		}
 		resourcetaken = rand()%4;
 		// cout<<resourcetaken<<endl;
-		cout<<pPlayers[choices]->getRIndex(resourcetaken)<<endl;
+		// cout<<pPlayers[choices]->getRIndex(resourcetaken)<<endl;
 		if (pPlayers[choices]->getRIndex(resourcetaken) > 0){
 			break;
 		}

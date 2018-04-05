@@ -150,7 +150,8 @@ void Player::setResidence(shared_ptr<Vertex> v){
 
 // Update resources for given player
 void Player::getResources(const int Resource, const int number){
-  this->resources[number] += number;
+  // cout<<idNum<<" "<<resources[Resource]<<endl;
+  this->resources[Resource] += number;
 }
 
 int Player::getID()
@@ -164,16 +165,16 @@ char Player::getColor()
 }
 string Player::convertColor() {
   string col;
-  if (pColor == 'B') {
+  if (idNum == 0) {
     col = "Blue";
   }
-  else if (pColor == 'R') {
+  else if (idNum == 1) {
     col = "Red";
   }
-  else if (pColor == 'O') {
+  else if (idNum == 2) {
     col = "Orange";
   }
-  else { // Yellow
+  else if(idNum == 3){ // Yellow
     col = "Yellow";
   }
   return col;

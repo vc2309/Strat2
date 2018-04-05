@@ -38,7 +38,7 @@ int main(int argc, char *argv[]){
         else{ 
 
             b = make_shared<Board>(true, false,-1, second, "BoardSkeleton.txt");
-            cout << "file to read: Construct" << second << endl;
+            // cout << "file to read: Construct" << second << endl;
         }
         b->attachBoard(b);
         b->updateBoard();
