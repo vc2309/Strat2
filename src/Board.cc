@@ -84,7 +84,8 @@ Board::Board(bool save, bool seed, int seedVal, string saved, string boardLayout
 	}
 	// SourceData initialization
 	textBoard = make_shared<UserDisplay>(boardLayout);
-	data = make_shared<SourceData>(saved);
+	if(!save){
+		data = make_shared<SourceData>(saved);}
 	// UserDisplay initialization
 
 	// use -1 as placeholder for a board with no geese
@@ -120,7 +121,7 @@ Board::Board(bool save, bool seed, int seedVal, string saved, string boardLayout
 					updatePlayerResource(resourceIndex, builderVal, i - 1);
 					++resourceIndex;
 				}
-				continue;
+				// continue;
 				// Iterate until reach h "housing"
 				while(ssLine >> check) { // Read in the roads
 					if (check == "h") {
@@ -131,7 +132,7 @@ Board::Board(bool save, bool seed, int seedVal, string saved, string boardLayout
 					pathwayVal >> road;
 					updatePlayerRoad(road, i - 1);
 				}
-				continue;
+				// continue;
 				// Iterate until the end of the builderDataLine
 				while(ssLine >> check) { // read in the pair of player vertices
 					// check should be a int, next ssLine >> check should be string
@@ -139,21 +140,36 @@ Board::Board(bool save, bool seed, int seedVal, string saved, string boardLayout
 					int level;
 					istringstream vertex{check};
 					vertex >> address; // address of player B,H,T
+					cout<<address<<" a"<<endl;
 					ssLine >> check; // residence LEVEL
 					level = convertLevel(check);
-					updatePlayerVertex(address, level, i - 1);
+					cout<<level<<" l"<<endl;
+					updatePlayerVertex(address, level+1, i - 1);
 				}
 			}
 			else if (i == 5) { // hit the board
 				// Construct SourceData obj
 				data = make_shared<SourceData>(save, line);
+				data->setSaved(true);
+
 			}
 			else { // hit the geese, i == 6
 				// IF -1, means no geese (0 - 18)
 				int geeseLocation;
 				istringstream ssLine{line};
 				ssLine >> geeseLocation;
+				cout<<geeseLocation<<"GEESE"<<endl;
+				if(geeseLocation==-1)
+				{
+
+				}
+				
+				
 				if (geeseLocation != -1) {
+					for (int i = 0; i < 19; ++i)
+					{
+						tiles[i]->setGeese(false);
+					}
 					tiles[geeseLocation]->setGeese(true);
 				}
 			}
@@ -327,11 +343,13 @@ void Board::updatePlayerResource(int resource, int amount, int players){
 void Board::updatePlayerVertex(int address, int level, int players){
 	shared_ptr<Player> Pplay= pPlayers[players];
 	shared_ptr<Vertex> PVert = vertices[address];
+	
 	for (int i = 0; i < level; i++){
 		PVert->levelup();
 	}
 	PVert->setOwner(players, Pplay);
 	Pplay->setResidence(PVert);
+	cout<<vertices[address]->getOwnerID()<<"id"<<endl;
 }
 void Board::updatePlayerRoad(int path, int players){
 	shared_ptr<Player> Pplay = this->pPlayers[players];
@@ -351,6 +369,7 @@ void Board::attachBoard(std::shared_ptr<Board> b) {
 // main.cc methods
 void Board::chosestarting(){
 	printBoard(); // Fine because we're not mutating the Board
+	
 	for (int i = 0; i < 4; i++){
 		
 		shared_ptr<Player> a = pPlayers[i];
@@ -375,28 +394,78 @@ void Board::chosestarting(){
 			}
 			cout << "You cannot build here." << endl;
 		} // Basement first
-		while(true){
-			cout << "Choose a Edge to Build Your First Road" << endl;
-			cin >> aa;
-			bool adj = false;
-			for (int j = 0; j < 2; j++){
-				shared_ptr<Vertex> v = edges[aa]->getVertex(j);
-				if (v->getOwnerID() == i){
-					adj = true;
-				}
-			}
-			if (aa <= 71 and aa >= 0 and edges[aa]->getOwnerID() == -1 and adj){
-				updatePlayerRoad(aa, i);
 
-				printBoard(); // Fine because we're not mutating the Board
-				break;
-			}
-			else{
-				cout << "You cannot build here." << endl;
-			}
-		}
+		// while(true){
+		// 	cout << "Choose a Edge to Build Your First Road" << endl;
+		// 	cin >> aa;
+		// 	bool adj = false;
+		// 	for (int j = 0; j < 2; j++){
+		// 		shared_ptr<Vertex> v = edges[aa]->getVertex(j);
+		// 		if (v->getOwnerID() == i){
+		// 			adj = true;
+		// 		}
+		// 	}
+		// 	if (aa <= 71 and aa >= 0 and edges[aa]->getOwnerID() == -1 and adj){
+		// 		updatePlayerRoad(aa, i);
+
+		// 		printBoard(); // Fine because we're not mutating the Board
+		// 		break;
+		// 	}
+		// 	else{
+		// 		cout << "You cannot build here." << endl;
+		// 	}
+		// }
 
 	}
+	for (int i = 3; i >=0 ; --i){
+		
+		shared_ptr<Player> a = pPlayers[i];
+		int aa;
+		while(true){
+			cout << "Player " << i << "!  Choose a Vertex to Build Your Second Building" << endl;
+			cout << "> ";
+			cin >> aa;
+			bool adj = true;
+			int size = vertices[aa]->getsize();
+			for (int j = 0; j < size; j++){
+				shared_ptr<Edge> v = vertices[aa]->getEdge(j);
+				for (int k = 0; k < 2; k++){
+					if (v->getVertex(k)->getOwnerID() != -1){
+						adj = false;
+					}
+				}
+			}
+			if (aa <= 54 and aa >= 0 and vertices[aa]->getOwnerID() == -1 and adj){
+				updatePlayerVertex(aa, 1, i);
+
+				break;
+			}
+			cout << "You cannot build here." << endl;
+		} // Basement first
+
+		// while(true){
+		// 	cout << "Choose a Edge to Build Your First Road" << endl;
+		// 	cin >> aa;
+		// 	bool adj = false;
+		// 	for (int j = 0; j < 2; j++){
+		// 		shared_ptr<Vertex> v = edges[aa]->getVertex(j);
+		// 		if (v->getOwnerID() == i){
+		// 			adj = true;
+		// 		}
+		// 	}
+		// 	if (aa <= 71 and aa >= 0 and edges[aa]->getOwnerID() == -1 and adj){
+		// 		updatePlayerRoad(aa, i);
+
+		// 		printBoard(); // Fine because we're not mutating the Board
+		// 		break;
+		// 	}
+		// 	else{
+		// 		cout << "You cannot build here." << endl;
+		// 	}
+		// }
+
+	}
+
 }
 
 void Board::playturn(int Players){
@@ -446,7 +515,10 @@ void Board::playturn(int Players){
 		}
 		else if (d == "status"){
 			for (int i = 0; i < 4; i++){
-				cout << "Player 0 has: " << pPlayers[i]->playerStatuses() << " Points!" << endl;
+				cout << pPlayers[i]->convertColor() <<" has " << pPlayers[i]->playerStatuses() << " building points, " <<pPlayers[i]->getRIndex(0)<<" brick, "<<pPlayers[i]->getRIndex(1)<<" energy, "<<pPlayers[i]->getRIndex(2)<<" glass, "<<pPlayers[i]->getRIndex(3)<<" heat, and "<<pPlayers[i]->getRIndex(4)<<" WiFi."<<endl;
+// 				cout<< <colour> has <numPoints> building points, <numBrick> brick, <numEnergy> energy,
+// <numGlass> glass, <numHeat> heat, and <numWiFi> WiFi.
+
 			}
 		}
 		else if (d == "residences"){
@@ -469,6 +541,7 @@ void Board::playturn(int Players){
 			bool f = pPlayers[Players]->buildres(e);
 			if (f){
 				cout << "Successfully Built" << endl;
+
 			}
 			else{
 				cout << "Error" << endl;
@@ -745,7 +818,9 @@ void Board::moveGeese(){
 	string choice;
 	int choices;
 	while (true){
-		cin >> choice;
+		cout<<"choose\n"<<endl;
+		cin.ignore();
+		getline(cin,choice);
 		if (choice == possiblePlayers[playerTurn]){
 			cout << "Invalid, you can't choose yourself" << endl;
 		}
@@ -759,7 +834,22 @@ void Board::moveGeese(){
 	else if (choice == "Yellow") choices = 3;
 	int resourcetaken;
 	while (true){
+		cout<<"here"<<endl;
+		bool allz=true;
+		for (int i = 0; i < 5; ++i)
+		{
+			if (pPlayers[choices]->getRIndex(i)>0)
+			{
+				allz=false;
+			}
+		}
+		if (allz)
+		{
+			break;
+		}
 		resourcetaken = rand()%4;
+		// cout<<resourcetaken<<endl;
+		cout<<pPlayers[choices]->getRIndex(resourcetaken)<<endl;
 		if (pPlayers[choices]->getRIndex(resourcetaken) > 0){
 			break;
 		}

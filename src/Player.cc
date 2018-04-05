@@ -87,6 +87,7 @@ bool Player::buildres(const int VertexNum){
   }
   if (canBuild && enoughResources){ // PBoard CANNOT be nullptr
     vertices->setOwner(this->idNum, PBoard->getPlayer(idNum));
+    BuildPoints++;
     return true;
   }
   return false;
@@ -200,3 +201,5 @@ std::shared_ptr<Vertex> Player::getVIndex(int v) {
 int Player::ownRes() {
   return PResidences.size();
 }
+
+

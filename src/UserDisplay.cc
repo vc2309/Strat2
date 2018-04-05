@@ -78,6 +78,7 @@ void UserDisplay::printBoardDisplay(Board &board) {
 				int level = vertex->getlevel();
 				if (level >= 0) { // Someone has built a residence there
 					shared_ptr<Player> player = vertex->getOwner();
+					
 					char color = printPlayer(player->getColor());
 
 					// set the actual vertex address on the baord 

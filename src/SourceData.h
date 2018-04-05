@@ -30,6 +30,7 @@ public:
   // Perform attachment after Board is constructed
   void attachBoard(std::shared_ptr<Board> b);
   void NotifyBoard();
+  void setSaved(bool);
 
 
 };

@@ -111,6 +111,11 @@ void SourceData::attachBoard(shared_ptr<Board> b) {
   PBoard = b;
 }
 
+void SourceData::setSaved(bool s)
+{
+  isSave=s;
+}
+
 void SourceData::NotifyBoard(){
   for(int i = 0; i < 19; i++){
     shared_ptr<Tile> PTile = PBoard->getTile(i);
@@ -118,10 +123,12 @@ void SourceData::NotifyBoard(){
     PTile->setResource(res[Brd[i]]);
     cout << Brd[i];
     PTile->setTileVal(Brd[i+19]);
-    if (i == 6){
+    
+    if (!isSave && i == 6){
       cout << "Geese Set" << endl;
       PTile->setGeese(true);
       cout << PTile->existGeese() << endl;
     }
+
   }
 }
